@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+</head>
+<body>
+    <h1>Notes</h1>
+    <pre id="note-content">Loading...</pre>
+
+    <script>
+        async function fetchNotes() {
+            const url = "https://raw.githubusercontent.com/Hiplitehehe/Notes/main/j.json";
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Failed to fetch notes");
+                const data = await response.json(); // Assuming `j.json` contains JSON data
+
+                document.getElementById("note-content").textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+                document.getElementById("note-content").textContent = "Error loading notes.";
+            }
+        }
+
+        fetchNotes();
+    </script>
+</body>
+</html>
