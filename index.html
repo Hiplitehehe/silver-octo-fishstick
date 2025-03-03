@@ -36,16 +36,22 @@
 
     <script>
         async function fetchNotes() {
-            const url = `https://raw.githubusercontent.com/Hiplitehehe/Notes/main/j.json?timestamp=${Date.now()}`;
+            const apiUrl = "https://api.github.com/repos/Hiplitehehe/Notes/contents/j.json";
             try {
-                const response = await fetch(url);
+                const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error("Failed to fetch notes");
-                const notes = await response.json(); // Assuming JSON contains an array of notes
+
+                const data = await response.json();
+                const decodedContent = atob(data.content); // Decode Base64
+                let notes = JSON.parse(decodedContent); // Convert JSON string to object
                 
+                // Ensure it's an array
+                const notesArray = Array.isArray(notes) ? notes : [notes];
+
                 const container = document.getElementById("note-container");
                 container.innerHTML = ""; // Clear previous content
 
-                notes.forEach(note => {
+                notesArray.forEach(note => {
                     const noteDiv = document.createElement("div");
                     noteDiv.className = "note";
                     noteDiv.innerHTML = `<h2>${note.title}</h2><p>${note.content}</p>`;
