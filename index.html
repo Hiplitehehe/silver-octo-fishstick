@@ -1,26 +1,59 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .note-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .note {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: 300px;
+            background-color: #f9f9f9;
+        }
+        .note h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .note p {
+            margin: 5px 0 0;
+        }
+    </style>
 </head>
 <body>
     <h1>Notes</h1>
-    <pre id="note-content">Loading...</pre>
+    <div class="note-container" id="note-container">Loading...</div>
 
     <script>
         async function fetchNotes() {
-            const url = "https://raw.githubusercontent.com/Hiplitehehe/Notes/main/j.json";
+            const url = `https://raw.githubusercontent.com/Hiplitehehe/Notes/main/j.json?timestamp=${Date.now()}`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("Failed to fetch notes");
-                const data = await response.json(); // Assuming `j.json` contains JSON data
+                const notes = await response.json(); // Assuming JSON contains an array of notes
+                
+                const container = document.getElementById("note-container");
+                container.innerHTML = ""; // Clear previous content
 
-                document.getElementById("note-content").textContent = JSON.stringify(data, null, 2);
+                notes.forEach(note => {
+                    const noteDiv = document.createElement("div");
+                    noteDiv.className = "note";
+                    noteDiv.innerHTML = `<h2>${note.title}</h2><p>${note.content}</p>`;
+                    container.appendChild(noteDiv);
+                });
             } catch (error) {
                 console.error("Error fetching notes:", error);
-                document.getElementById("note-content").textContent = "Error loading notes.";
+                document.getElementById("note-container").textContent = "Error loading notes.";
             }
         }
 
